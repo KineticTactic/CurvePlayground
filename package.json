@@ -1,0 +1,17 @@
+{
+  "name": "curve-playground",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "@types/victor": "^1.1.0",
+    "typescript": "^4.3.2",
+    "vite": "^2.5.4"
+  },
+  "dependencies": {
+    "victor": "^1.1.0"
+  }
+}

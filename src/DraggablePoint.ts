@@ -1,35 +1,36 @@
 import Victor from "victor";
 import Entity from "./Entity";
 import Scene from "./Scene";
+import {CanvasTransforms} from "./common";
 
 export default class DraggablePoint extends Entity {
     static draggablesContainer = document.getElementById("draggables")!;
 
     size: number;
     elt: HTMLDivElement;
-    isBeingDragged= false;
+    isBeingDragged = false;
 
-    constructor(scene: Scene, pos: Victor) {
+    constructor(scene: Scene, pos: Victor, size = 15, color = "lime") {
         super(pos);
-        this.size = 25;
+        this.size = size;
 
         this.elt = document.createElement("div");
 
         this.elt.style.width = `${this.size}px`;
         this.elt.style.height = `${this.size}px`;
-        this.elt.style.backgroundColor = "lime";
+        this.elt.style.backgroundColor = color;
         this.elt.style.position = "absolute";
         this.elt.style.borderRadius = "50%";
         this.elt.style.userSelect = "none";
 
-        this.updatePos();
+        this.updateEltPos();
 
         this.elt.addEventListener("mouseenter", () => {
             this.elt.style.backgroundColor = "cyan";
         });
 
         this.elt.addEventListener("mouseleave", () => {
-            this.elt.style.backgroundColor = "lime";
+            this.elt.style.backgroundColor = color;
         });
 
         this.elt.addEventListener("mousedown", (_e) => {
@@ -41,21 +42,50 @@ export default class DraggablePoint extends Entity {
         scene.add(this);
     }
 
-    private updatePos() {
-        this.elt.style.top = `${this.pos.y - this.size/2}px`;
-        this.elt.style.left = `${this.pos.x - this.size/2}px`;
+    private updateEltPos() {
+        this.elt.style.left = `${(this.pos.x - this.size / CanvasTransforms.scale / 2) * CanvasTransforms.scale + CanvasTransforms.offset.x}px`;
+        this.elt.style.top = `${(this.pos.y - this.size / CanvasTransforms.scale / 2) * CanvasTransforms.scale + CanvasTransforms.offset.y}px`;
+    }
+
+    // override onMouseDown(x: number, y: number) {
+    // if (lineCircleCollision(x, y, this.pos.x, this.pos.y, this.size)) {
+    //     this.isBeingDragged = true;
+    // }
+    // }
+
+    setPosition(x: number, y: number) {
+        this.pos.x = x;
+        this.pos.y = y;
+        this.updateEltPos();
     }
 
     override onMouseMove(x: number, y: number) {
         if (!this.isBeingDragged)
             return;
 
-        this.pos.x = x;
-        this.pos.y = y;
-        this.updatePos();
+        this.pos.x = (x - CanvasTransforms.offset.x) / CanvasTransforms.scale;
+        this.pos.y = (y - CanvasTransforms.offset.y) / CanvasTransforms.scale;
+        this.updateEltPos();
     }
 
     override onMouseUp() {
         this.isBeingDragged = false;
     }
+
+    override onCanvasTransform() {
+        this.updateEltPos();
+    }
+
+    // override renderOnBoard(boardCtx: CanvasRenderingContext2D) {
+    //     boardCtx.fillStyle = "cyan";
+    //
+    //     boardCtx.save();
+    //     boardCtx.translate(offset.x, offset.y);
+    //
+    //     boardCtx.beginPath();
+    //     boardCtx.arc(this.pos.x * zoom, this.pos.y * zoom, this.size / 2, 0, Math.PI * 2);
+    //     boardCtx.fill();
+    //
+    //     boardCtx.restore();
+    // }
 }

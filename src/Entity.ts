@@ -7,7 +7,22 @@ export default class Entity {
         this.pos = pos;
     }
 
-    onMouseDown(_x: number, _y: number) {}
-    onMouseMove(_x: number, _y: number) {}
-    onMouseUp(_x: number, _y:number) {}
+    onMouseDown(_x: number, _y: number) {
+    }
+
+    onMouseMove(_x: number, _y: number) {
+    }
+
+    onMouseUp(_x: number, _y: number) {
+    }
+
+    onCanvasTransform() {
+    }
+
+    renderOnBoard(_boardCtx: CanvasRenderingContext2D) {
+    }
+
+    renderOnDrawingCanvas(_drawCtx: CanvasRenderingContext2D) {
+    }
+
 }
